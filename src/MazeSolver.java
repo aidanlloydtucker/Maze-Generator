@@ -24,6 +24,11 @@ public class MazeSolver {
     }
 
     // Return an array of cells (and directions)
+    public void solve() {
+        solve(maze.getStartX(), maze.getStartY(), maze.getEndX(), maze.getEndY());
+    }
+
+    // Return an array of cells (and directions)
     public void solve(int startX, int startY, int endX, int endY) {
         clear();
 

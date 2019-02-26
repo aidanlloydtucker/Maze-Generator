@@ -15,9 +15,17 @@ public class Maze {
     private final Random random = new Random();
     // The internal representation of the maze
     private MazeCell[][] mazeMatrix;
-    private int width;
+
+
     // Dimensions of maze
+    private int width;
     private int height;
+
+    // Start and end points of maze
+    private int startX;
+    private int startY;
+    private int endX = 0;
+    private int endY = 0;
 
     /**
      * Creates a maze with width and height dimensions
@@ -29,9 +37,41 @@ public class Maze {
         this.width = w;
         this.height = h;
 
+        updateStartEndPoints();
+
         clear();
     }
 
+    private void updateStartEndPoints() {
+        this.setStart(this.width - 1, this.height - 1);
+        this.setEnd(0, 0);
+    }
+
+    public void setStart(int x, int y) {
+        this.startX = x;
+        this.startY = y;
+    }
+
+    public void setEnd(int x, int y) {
+        this.endX = x;
+        this.endY = y;
+    }
+
+    public int getStartX() {
+        return startX;
+    }
+
+    public int getStartY() {
+        return startY;
+    }
+
+    public int getEndX() {
+        return endX;
+    }
+
+    public int getEndY() {
+        return endY;
+    }
 
     /**
      * Changes dimensions of maze
@@ -42,6 +82,9 @@ public class Maze {
     public void changeDimensions(int w, int h) {
         this.width = w;
         this.height = h;
+
+        updateStartEndPoints();
+
         clear();
     }
 

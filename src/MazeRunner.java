@@ -4,18 +4,13 @@
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-
-import java.util.LinkedList;
 
 public class MazeRunner extends Application {
 
@@ -25,23 +20,32 @@ public class MazeRunner extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        // Set the window title
         primaryStage.setTitle("Maze Runner");
 
+        // Create the root of the window as a border pane
         BorderPane root = new BorderPane();
 
+        // Make the maze and maze solver
         Maze maze = new Maze(30, 30);
         maze.generate();
 
         MazeSolver mazeSolver = new MazeSolver(maze);
 
+        // Create the canvas for the maze
         MazeCanvas canvas = new MazeCanvas(maze, mazeSolver);
 
+        // Create a pane to wrap the canvas
         Pane wrapperPane = new Pane();
         root.setCenter(wrapperPane);
 
+        // Add the canvas to the wrapper pane and
+        // then bind the canvas dimensions to the wrapper
         wrapperPane.getChildren().add(canvas);
         canvas.widthProperty().bind(wrapperPane.widthProperty());
         canvas.heightProperty().bind(wrapperPane.heightProperty());
+
+        /* Create W and H Selectors */
 
         Spinner<Integer> widthSpinner = new Spinner<>(1, Integer.MAX_VALUE, maze.getWidth());
         widthSpinner.setEditable(true);
@@ -50,6 +54,10 @@ public class MazeRunner extends Application {
         heightSpinner.setEditable(true);
         heightSpinner.setPromptText("Height");
 
+        /* Button Creation */
+
+        // When someone clicks the generation button, if the dimensions should be changed, change them;
+        // generate a new maze; clear the solver, as we have a new maze; and then redraw the canvas
         Button generateButton = new Button("Generate");
         generateButton.setOnAction(event -> {
             if (maze.getWidth() != widthSpinner.getValue() || maze.getHeight() != heightSpinner.getValue()) {
@@ -60,6 +68,8 @@ public class MazeRunner extends Application {
             canvas.draw();
         });
 
+        // When someone clicks the clear button, if the dimensions should be changed, change them;
+        // clear the maze; clear the solver, as we have no maze; and then redraw the canvas
         Button clearButton = new Button("Clear");
         clearButton.setOnAction(event -> {
             if (maze.getWidth() != widthSpinner.getValue() || maze.getHeight() != heightSpinner.getValue()) {
@@ -70,12 +80,16 @@ public class MazeRunner extends Application {
             canvas.draw();
         });
 
+        // When someone clicks the solve button, solve the maze and then redraw the canvas
         Button solveButton = new Button("Solve");
         solveButton.setOnAction(event -> {
-            mazeSolver.solve(maze.getWidth() - 1, maze.getHeight() - 1, 0, 0);
+            mazeSolver.solve();
             canvas.draw();
         });
 
+        /* Control Toolbar */
+
+        // Create a bottom toolbar with controls
         ToolBar toolBar = new ToolBar(
                 widthSpinner,
                 heightSpinner,
@@ -85,121 +99,11 @@ public class MazeRunner extends Application {
                 solveButton
         );
 
+        // Add the toolbar to the root
         root.setBottom(toolBar);
 
+        // Create the stage and scene and display the window
         primaryStage.setScene(new Scene(root, 600, 600));
         primaryStage.show();
-    }
-
-    class MazeCanvas extends Canvas {
-        private final Maze maze;
-        private MazeSolver solver = null;
-
-        public MazeCanvas(Maze maze) {
-            this.maze = maze;
-
-            // Redraw canvas when size changes.
-            widthProperty().addListener(evt -> draw());
-            heightProperty().addListener(evt -> draw());
-        }
-
-        public MazeCanvas(Maze maze, MazeSolver solver) {
-            this.maze = maze;
-            this.solver = solver;
-
-            widthProperty().addListener(evt -> draw());
-            heightProperty().addListener(evt -> draw());
-        }
-
-        private void draw() {
-            double width = getWidth();
-            double height = getHeight();
-
-            GraphicsContext gc = getGraphicsContext2D();
-            gc.clearRect(0, 0, width, height);
-
-            int mazeWidth = maze.getWidth();
-            int mazeHeight = maze.getHeight();
-
-            double cellWidth = width/mazeWidth;
-            double cellHeight = height/mazeHeight;
-
-            // Start position
-            gc.setFill(Color.GREEN);
-            gc.fillRect((mazeWidth-1)*cellWidth + 1, (mazeHeight-1)*cellHeight + 1, cellWidth - 1, cellHeight - 1);
-
-            // End position
-            gc.setFill(Color.RED);
-            gc.fillRect(0, 0, cellWidth - 1, cellHeight - 1);
-
-            gc.setStroke(Color.BLACK);
-            for (int x = 0; x < mazeWidth; x++) {
-                for (int y = 0; y < mazeHeight; y++) {
-                    //gc.setFill(Color.rgb(255,255,255));
-                    //gc.fillRect(x*cellWidth, y*cellHeight, cellWidth, cellHeight);
-
-                    MazeCell cell = this.maze.getCell(x,y);
-
-                    // North
-                    if (cell.hasWall(WallConstants.WALL_NORTH)) {
-                        gc.strokeLine(x*cellWidth, y*cellHeight, x*cellWidth+cellWidth, y*cellHeight);
-                    }
-
-                    // South
-                    if (cell.hasWall(WallConstants.WALL_SOUTH)) {
-                        gc.strokeLine(x*cellWidth, y*cellHeight + cellHeight, x*cellWidth+cellWidth, y*cellHeight + cellHeight);
-                    }
-
-                    // East
-                    if (cell.hasWall(WallConstants.WALL_EAST)) {
-                        gc.strokeLine(x*cellWidth + cellWidth, y*cellHeight, x*cellWidth + cellWidth, y*cellHeight + cellHeight);
-                    }
-
-                    // West
-                    if (cell.hasWall(WallConstants.WALL_WEST)) {
-                        gc.strokeLine(x*cellWidth, y*cellHeight, x*cellWidth, y*cellHeight + cellHeight);
-                    }
-                }
-            }
-
-            if (solver != null && solver.solved()) {
-                gc.setStroke(Color.PURPLE);
-
-                LinkedList<MazeCell> solution = solver.getSolution();
-                MazeCell prevCell = null;
-                for (MazeCell cell : solution) {
-                    if (prevCell == null) {
-                        prevCell = cell;
-                        continue;
-                    }
-
-                    double currMidpointX = (cell.getX()*cellWidth + cell.getX()*cellWidth + cellWidth)/2;
-                    double currMidpointY = (cell.getY()*cellHeight + cell.getY()*cellHeight + cellHeight)/2;
-
-                    double prevMidpointX = (prevCell.getX()*cellWidth + prevCell.getX()*cellWidth + cellWidth)/2;
-                    double prevMidpointY = (prevCell.getY()*cellHeight + prevCell.getY()*cellHeight + cellHeight)/2;
-
-                    gc.strokeLine(prevMidpointX, prevMidpointY, currMidpointX, currMidpointY);
-
-                    prevCell = cell;
-                }
-            }
-        }
-
-        @Override
-        public boolean isResizable() {
-            return true;
-        }
-
-        @Override
-        public double prefWidth(double height) {
-            return getWidth();
-        }
-
-        @Override
-        public double prefHeight(double width) {
-            return getHeight();
-        }
-
     }
 }
