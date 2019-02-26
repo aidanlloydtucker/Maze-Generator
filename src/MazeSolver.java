@@ -1,9 +1,12 @@
+/*
+ * Copyright (c) 2019 Aidan Lloyd-Tucker.
+ */
+
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Stack;
 
 public class MazeSolver {
-    private Maze maze;
+    private final Maze maze;
     private int[][] visitedCells;
     private LinkedList<MazeCell> solution;
 
@@ -72,13 +75,14 @@ public class MazeSolver {
 
     @Override
     public String toString() {
-        String str = "";
+        StringBuilder str = new StringBuilder();
         for (int y = 0; y < maze.getHeight(); y++) {
             for (int x = 0; x < maze.getWidth(); x++) {
-                str += visitedCells[y][x] + " ";
+                str.append(visitedCells[y][x]);
+                str.append(" ");
             }
-            str += "\n";
+            str.append("\n");
         }
-        return str;
+        return str.toString();
     }
 }

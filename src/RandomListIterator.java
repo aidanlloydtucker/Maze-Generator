@@ -1,14 +1,18 @@
+/*
+ * Copyright (c) 2019 Aidan Lloyd-Tucker.
+ */
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
 public class RandomListIterator<E> implements Iterator<E> {
 
-    private ArrayList<E> list;
+    private final static Random random = new Random();
     private int index;
-    private int firstIndex;
+    private final ArrayList<E> list;
     private boolean hasNext = true;
-    private static Random random = new Random();
+    private final int firstIndex;
 
 
     public RandomListIterator(ArrayList<E> l) {

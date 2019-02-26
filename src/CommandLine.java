@@ -1,6 +1,12 @@
+/*
+ * Copyright (c) 2019 Aidan Lloyd-Tucker.
+ */
+
+import org.jetbrains.annotations.NotNull;
+
 public class CommandLine {
 
-    public static void main(String[] args) {
+    public static void main(@NotNull String[] args) {
         int width = 30;
         int height = 30;
 

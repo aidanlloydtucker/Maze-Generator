@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019 Aidan Lloyd-Tucker.
+ */
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -7,15 +11,15 @@ public class RandomList<E> {
 
     // Make this better
     // MORE EFFICIENT
-    private ArrayList<E> internalList;
-    private Random random = new Random();
+    private final ArrayList<E> internalList;
+    private final Random random = new Random();
 
     public RandomList() {
-        internalList = new ArrayList<E>();
+        internalList = new ArrayList<>();
     }
 
     public RandomList(Collection<? extends E> c) {
-        internalList = new ArrayList<E>(c);
+        internalList = new ArrayList<>(c);
     }
 
     public void add(E e) {
@@ -39,6 +43,6 @@ public class RandomList<E> {
     }
 
     public Iterator<E> iterator() {
-        return new RandomListIterator<E>(internalList);
+        return new RandomListIterator<>(internalList);
     }
 }

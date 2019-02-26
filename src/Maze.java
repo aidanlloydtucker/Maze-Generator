@@ -1,12 +1,30 @@
+/*
+ * Copyright (c) 2019 Aidan Lloyd-Tucker.
+ */
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+/**
+ * The maze representation
+ */
 public class Maze {
+    private final Random random = new Random();
+    // The internal representation of the maze
     private MazeCell[][] mazeMatrix;
-    private int height;
     private int width;
+    // Dimensions of maze
+    private int height;
 
+    /**
+     * Creates a maze with width and height dimensions
+     *
+     * @param w width
+     * @param h height
+     */
     public Maze(int w, int h) {
         this.width = w;
         this.height = h;
@@ -14,12 +32,22 @@ public class Maze {
         clear();
     }
 
+
+    /**
+     * Changes dimensions of maze
+     *
+     * @param w width
+     * @param h height
+     */
     public void changeDimensions(int w, int h) {
         this.width = w;
         this.height = h;
         clear();
     }
 
+    /**
+     * Clears maze by creating new cells with all walls
+     */
     public void clear() {
         MazeCell[][] genMatrix = new MazeCell[height][width];
         for (int i = 0; i < genMatrix.length; i++) {
@@ -31,16 +59,14 @@ public class Maze {
         this.mazeMatrix = genMatrix;
     }
 
+    /**
+     * Generates the maze using a modified Prim's algorithm
+     */
     public void generate() {
         clear();
-
-        Random rand = new Random();
-
         // Get random cell to start
-        int randCellX = rand.nextInt(width);
-        int randCellY = rand.nextInt(height);
-
-        // Visit this random cell
+        int randCellX = random.nextInt(width);
+        int randCellY = random.nextInt(height);
         MazeCell randCell = this.mazeMatrix[randCellY][randCellX];
 
         // Generate a list of adjacent cells
@@ -54,40 +80,55 @@ public class Maze {
             MazeCell cell = adjList.popRandom();
 
             // TODO: THIS IS HOW I FIXED IT
+            // If this cell has already been visited, ignore it
             if (cell.isVisited()) {
                 continue;
             }
 
+            // Visit the cell
             cell.visit();
 
-            // Get its adjacent cells
-            ArrayList<MazeCell> adjCells = getNeighbors(cell);
+            // Get its neighboring/adjacent cells
+            ArrayList<MazeCell> neighbors = getNeighbors(cell);
 
-            Iterator<MazeCell> iter = new RandomListIterator<>(adjCells);
+            // Randomly go through the list of neighbors until you find one that is already visited
+            Iterator<MazeCell> iter = new RandomListIterator<>(neighbors);
             while (iter.hasNext()) {
                 MazeCell adjCell = iter.next();
+
+                // Then, remove the wall between the current cell and its already visited neighbor
                 if (adjCell.isVisited()) {
                     removeWall(cell, adjCell);
                     break;
                 }
             }
 
-            // Add neighboring cells
-            for (MazeCell adjCell : adjCells) {
+            // Add the neighboring cells that haven't been visited to the adjacency list
+            for (MazeCell adjCell : neighbors) {
                 if (!adjCell.isVisited()) {
                     adjList.add(adjCell);
                 }
             }
-
         }
     }
 
-    private void removeWall(MazeCell cell1, MazeCell cell2) {
-        int c1to2Dir = cell1.cellDirection(cell2);
-        cell1.openWall(c1to2Dir);
-        cell2.openWall(MazeCell.invertDirection(c1to2Dir));
+    /**
+     * Remove the wall between two maze cells
+     *
+     * @param a the maze cell that a wall will be removed from
+     * @param b the adjacent maze cell with the wall connecting
+     */
+    private void removeWall(@NotNull MazeCell a, @NotNull MazeCell b) {
+        int abDirection = a.cellDirection(b);
+        a.openWall(abDirection);
+        b.openWall(WallConstants.invertDirection(abDirection));
     }
 
+    /**
+     * Get the neighbors of a cell
+     * @param cell the maze cell
+     * @return neighbors of that cell, ordered by [W,N,E,S]
+     */
     public ArrayList<MazeCell> getNeighbors(MazeCell cell) {
         ArrayList<MazeCell> cells = new ArrayList<>();
         if (cell.getX() > 0) {
@@ -106,36 +147,61 @@ public class Maze {
         return cells;
     }
 
+    /**
+     * The height of the maze.
+     * @return the height of the maze
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * The width of the maze.
+     * @return the width of the maze
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * Gets the maze cell at the specified coordinates
+     * @param x x coordinate
+     * @param y y coordinate
+     * @return the maze cell at (x,y)
+     */
     public MazeCell getCell(int x, int y) {
         return this.mazeMatrix[y][x];
     }
 
+    /**
+     * Converts to a string. Each cell is represented as a 3x3 square
+     * @return the string representing the maze
+     */
     public String toString() {
         StringBuilder str = new StringBuilder();
+
+        // For all in the y direction
         for (int i = 0; i < mazeMatrix.length; i++) {
-            String[] strLines = new String[3];
-            strLines[0] = "";
-            strLines[1] = "";
-            strLines[2] = "";
+            // Because cells are represented as 3x3 squares, we need to have 3 lines
+            StringBuilder str1 = new StringBuilder();
+            StringBuilder str2 = new StringBuilder();
+            StringBuilder str3 = new StringBuilder();
+
+            // For each cell in this row, get the 3x3 representation and append each respective line to the lines
             for (int j = 0; j < mazeMatrix[i].length; j++) {
-                strLines[0] += mazeMatrix[i][j].toCellRep()[0];
-                strLines[1] += mazeMatrix[i][j].toCellRep()[1];
-                strLines[2] += mazeMatrix[i][j].toCellRep()[2];
+                String[] cellRep = mazeMatrix[i][j].toCellRep();
+                str1.append(cellRep[0]);
+                str2.append(cellRep[1]);
+                str3.append(cellRep[2]);
             }
-            str.append(strLines[0]);
-            str.append("\n");
-            str.append(strLines[1]);
-            str.append("\n");
-            str.append(strLines[2]);
-            str.append("\n");
+
+            // Add these 3 lines to the main string
+            str1.append("\n");
+            str2.append("\n");
+            str3.append("\n");
+            str.append(str1);
+            str.append(str2);
+            str.append(str3);
         }
         return str.toString();
     }
