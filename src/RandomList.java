@@ -8,9 +8,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 public class RandomList<E> {
-
-    // Make this better
-    // MORE EFFICIENT
+    // I use a list here just for ease of use and simplicity, and because it was the best idea I thought of
     private final ArrayList<E> internalList;
     private final Random random = new Random();
 
