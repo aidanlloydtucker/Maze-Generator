@@ -1,5 +1,16 @@
 # Maze Generator
 
+## How to Run
+
+To Compile:
+`javac CommandLine.java MazeCell.java MazeCanvas.java MazeRunner.java MazeSolver.java RandomList.java RandomListIterator.java WallConstants.java`
+
+Run GUI:
+`java MazeRunner`
+
+Run CLI:
+`java CommandLine`
+
 ## Outline
  * `Maze.java` contains the maze generation logic and the maze object
    * `MazeCell.java` contains the logic for each cell in the maze
