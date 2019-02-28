@@ -2,8 +2,6 @@
  * Copyright (c) 2019 Aidan Lloyd-Tucker.
  */
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
@@ -161,7 +159,7 @@ public class Maze {
      * @param a the maze cell that a wall will be removed from
      * @param b the adjacent maze cell with the wall connecting
      */
-    private void removeWall(@NotNull MazeCell a, @NotNull MazeCell b) {
+    private void removeWall(MazeCell a, MazeCell b) {
         int abDirection = a.cellDirection(b);
         a.openWall(abDirection);
         b.openWall(WallConstants.invertDirection(abDirection));

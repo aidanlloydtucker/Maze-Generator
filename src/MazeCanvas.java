@@ -5,7 +5,6 @@
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 
@@ -13,14 +12,14 @@ class MazeCanvas extends Canvas {
     private final Maze maze;
     private MazeSolver solver = null;
 
-    public MazeCanvas(@NotNull Maze maze) {
+    public MazeCanvas(Maze maze) {
         this.maze = maze;
 
         widthProperty().addListener(evt -> draw());
         heightProperty().addListener(evt -> draw());
     }
 
-    public MazeCanvas(@NotNull Maze maze, MazeSolver solver) {
+    public MazeCanvas(Maze maze, MazeSolver solver) {
         this.maze = maze;
         this.solver = solver;
 
@@ -50,7 +49,7 @@ class MazeCanvas extends Canvas {
         }
     }
 
-    private void drawStartEnd(@NotNull GraphicsContext gc, double cellWidth, double cellHeight) {
+    private void drawStartEnd(GraphicsContext gc, double cellWidth, double cellHeight) {
         // Start position
         gc.setFill(Color.GREEN);
         gc.fillRect(maze.getStartX() * cellWidth + 1, maze.getStartY() * cellHeight + 1, cellWidth - 1, cellHeight - 1);
@@ -60,7 +59,7 @@ class MazeCanvas extends Canvas {
         gc.fillRect(maze.getEndX(), maze.getEndY(), cellWidth - 1, cellHeight - 1);
     }
 
-    private void drawMaze(@NotNull GraphicsContext gc, double cellWidth, double cellHeight) {
+    private void drawMaze(GraphicsContext gc, double cellWidth, double cellHeight) {
         int mazeWidth = maze.getWidth();
         int mazeHeight = maze.getHeight();
 
@@ -93,7 +92,7 @@ class MazeCanvas extends Canvas {
         }
     }
 
-    private void drawSolution(@NotNull GraphicsContext gc, double cellWidth, double cellHeight) {
+    private void drawSolution(GraphicsContext gc, double cellWidth, double cellHeight) {
         gc.setStroke(Color.PURPLE);
 
         LinkedList<MazeCell> solution = solver.getSolution();
@@ -116,11 +115,11 @@ class MazeCanvas extends Canvas {
         }
     }
 
-    private double getCellMidpointX(@NotNull MazeCell cell, double cellWidth) {
+    private double getCellMidpointX(MazeCell cell, double cellWidth) {
         return (cell.getX() * cellWidth + cell.getX() * cellWidth + cellWidth) / 2;
     }
 
-    private double getCellMidpointY(@NotNull MazeCell cell, double cellHeight) {
+    private double getCellMidpointY(MazeCell cell, double cellHeight) {
         return (cell.getY() * cellHeight + cell.getY() * cellHeight + cellHeight) / 2;
     }
 
