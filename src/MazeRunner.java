@@ -49,10 +49,8 @@ public class MazeRunner extends Application {
 
         Spinner<Integer> widthSpinner = new Spinner<>(1, Integer.MAX_VALUE, maze.getWidth());
         widthSpinner.setEditable(true);
-        widthSpinner.setPromptText("Width");
         Spinner<Integer> heightSpinner = new Spinner<>(1, Integer.MAX_VALUE, maze.getHeight());
         heightSpinner.setEditable(true);
-        heightSpinner.setPromptText("Height");
 
         /* Button Creation */
 
