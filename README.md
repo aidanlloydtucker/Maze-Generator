@@ -3,7 +3,7 @@
 ## How to Run
 
 To Compile:
-`javac CommandLine.java MazeCell.java MazeCanvas.java MazeRunner.java MazeSolver.java RandomList.java RandomListIterator.java WallConstants.java`
+`javac Maze.java CommandLine.java MazeCell.java MazeCanvas.java MazeRunner.java MazeSolver.java RandomList.java RandomListIterator.java WallConstants.java`
 
 Run GUI:
 `java MazeRunner`
