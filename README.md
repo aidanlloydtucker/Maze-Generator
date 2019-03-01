@@ -9,7 +9,7 @@ Run GUI:
 `java MazeRunner`
 
 Run CLI:
-`java CommandLine`
+`java CommandLine [width] [height]`
 
 ## Outline
  * `Maze.java` contains the maze generation logic and the maze object
